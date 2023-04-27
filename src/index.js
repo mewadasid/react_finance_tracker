@@ -5,14 +5,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import DisplayTable from './pages/finance/financeTable';
+import Form from './pages/finance/transactionForm/components/form';
+import Displayuser from './pages/finance/financeTable/components/displayUser';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}></Route>
-      <Route path="/transaction" element={<DisplayTable />}></Route>
+      <Route path="/createTransaction" element={<Form />}></Route>
+      <Route path="/user/:id" element={<Displayuser />}></Route>
+
       {/* <Route path="/user" element={<Userdisplay />}></Route>
       <Route path="/post" element={<Userpost />}></Route>
       <Route path="/user/createUser" element={<Usercreate />}></Route>

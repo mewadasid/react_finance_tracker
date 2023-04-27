@@ -1,11 +1,12 @@
 
 import './App.css';
-import Form from './pages/finance/transactionForm/components/form';
+import DisplayTable from './pages/finance/financeTable';
+
 
 function App() {
   return (
     <div className="App">
-      <Form />
+      <DisplayTable />
     </div>
   );
 }

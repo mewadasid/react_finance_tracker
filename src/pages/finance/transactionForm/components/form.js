@@ -77,7 +77,7 @@ export default function Form() {
                 }
                 else {
                     setLocalstorage();
-                    navigate("/transaction");
+                    navigate("/");
                 }
                 break;
 
@@ -118,6 +118,7 @@ export default function Form() {
                         const { file_big, ...rest } = c
                         return rest;
                     })
+
 
                     const reader = new FileReader();
                     const file_banner = e.target.files[0];
@@ -172,7 +173,7 @@ export default function Form() {
 
         if (transaction["tran_note"] !== "") {
 
-            if (transaction["tran_note"].length > 10) {
+            if (transaction["tran_note"].length > 250) {
                 setFormError({ ...formerror, note_error: "Length is reached!!!" })
             }
             else {
