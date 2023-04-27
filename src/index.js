@@ -1,12 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import Form from './pages/finance/transactionForm/components/form';
-import Displayuser from './pages/finance/financeTable/components/displayUser';
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import Form from "./pages/finance/transactionForm/components/form";
+import Displayuser from "./pages/finance/financeTable/components/displayUser";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
