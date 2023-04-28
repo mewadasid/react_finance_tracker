@@ -1,13 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/style.css";
+import Selectcombo from "../../transactionForm/components/comboBox";
+import Pagination from "./pagination";
 
 export default function Transactiontable() {
   const sortOrder = useRef("");
   const transDetail = JSON.parse(localStorage.getItem("Transaction"));
   const [lastSortkey, setLastSortKey] = useState(null);
   const [sortedData, setSortedData] = useState(transDetail);
-  console.log(transDetail, "BEFORE");
+  const [groupData, setGroupData] = useState();
+  const [finalData, setFinalData] = useState();
 
   const sorting = (sortBy) => {
     if (sortBy === lastSortkey && sortOrder.current === "asc") {
@@ -21,6 +24,14 @@ export default function Transactiontable() {
     performSort(sortBy);
   };
 
+  const groupBy = [
+    { value: "none", key: "none" },
+    { value: "Month Year", key: "tran_month" },
+    { value: "Transaction type", key: "tran_type" },
+    { value: "From Account", key: "tran_from" },
+    { value: "To Account", key: "tran_to" },
+
+  ]
   const month = [
     "JAN 2023",
     "FEB 2023",
@@ -91,7 +102,7 @@ export default function Transactiontable() {
         sortedamount = [...transDetail].sort((a, b) => {
           return Number(a[amount]) < Number(b[amount]) ? 1 : -1;
         });
-        console.log(sortedamount);
+
         break;
       default:
         sortedamount = [...transDetail];
@@ -143,15 +154,69 @@ export default function Transactiontable() {
         break;
     }
   };
+  console.log(groupData)
+  const handleChange = (e) => {
+    const group = e.target.value;
+    console.log(group)
+    const groupedMap = {};
 
+    for (const e of transDetail) {
+
+      if (groupedMap.hasOwnProperty(e[group])) {
+        groupedMap[e[group]].push(e);
+      }
+      else {
+        groupedMap[e[group]] = [e];
+      }
+    }
+    setGroupData(groupedMap);
+
+  }
+
+
+
+  const [pages, setPages] = useState({
+    page: 1,
+    limit: 3,
+    totalPage: [],
+    length: transDetail.length,
+  })
+
+  useEffect(() => {
+    const total = [];
+    for (let i = 1; i <= Math.ceil(pages.length / pages.limit); i++) {
+      total.push(i);
+    }
+    setPages({ ...pages, totalPage: total });
+    //eslint-disable-next-line
+  }, [])
+
+
+  const handlePage = (e) => {
+    setPages({ ...pages, page: e });
+  }
+  console.log(groupData)
   return (
+
     <div>
       <Link to={"/createTransaction"}>
-        {" "}
         <button type="button" className="btn btn-primary my-4 ">
           Create Transaction
         </button>
       </Link>
+      <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
+        <option value=""></option>
+        <option value="tran_month">Month Year</option>
+        <option value="tran_type">Transaction Type</option>
+        <option value="tran_from">From Account</option>
+        <option value="tran_to">To Account</option>
+      </select>
+
+      <div>
+        <Pagination handlePage={handlePage} pageTable={pages} />
+
+      </div>
+
       <table className="table main_table">
         <thead className="table-dark">
           <tr>
@@ -270,7 +335,38 @@ export default function Transactiontable() {
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((item, index) => {
+          {/* {groupData ? Object.values(groupData).map((data) => {
+
+            return data.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>{item.tran_date}</td>
+                  <td>{item.tran_month}</td>
+                  <td>{item.tran_type}</td>
+                  <td>{item.tran_from}</td>
+                  <td>{item.tran_to}</td>
+                  <td>
+                    {Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      minimumFractionDigits: 0,
+                    }).format(item.tran_amount)}
+                  </td>
+                  <td>
+                    <img src={item.tran_receipt} width="100px" alt="Content" />
+                  </td>
+                  <td>{item.tran_note}</td>
+                  <td>
+                    <Link to={`/user/${index}`}>
+                      <i className="fa-sharp fa-solid fa-eye icon_ml"></i>
+                    </Link>
+                  </td>
+                </tr>
+              )
+            })
+          }) : */}
+
+          {sortedData.slice((pages.page - 1) * pages.limit, pages.page * pages.limit).map((item, index) => {
             return (
               <tr key={index}>
                 <td>{item.tran_date}</td>
@@ -296,9 +392,53 @@ export default function Transactiontable() {
                 </td>
               </tr>
             );
-          })}
+          })
+          }
         </tbody>
       </table>
-    </div>
+
+
+      {groupData ? Object.values(groupData).map((data) => {
+        return (
+          <table className="table main_table">
+            <thead >
+              <th onClick={() => sorting("tran_date")}>Transaction Date</th>
+              <th onClick={() => sorting("tran_month")}>Month Year</th>
+              <th onClick={() => sorting("tran_type")}>Transaction Type</th>
+              <th onClick={() => sorting("tran_from")}>Transaction From</th>
+              <th onClick={() => sorting("tran_to")}>To</th>
+              <th onClick={() => sorting("tran_amount")}>Amount</th>
+              <th onClick={() => sorting("tran_receipt")}>Receipt</th>
+              <th onClick={() => sorting("tran_note")}>Notes</th>
+            </thead>
+            {
+              data.map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{item.tran_date}</td>
+                    <td>{item.tran_month}</td>
+                    <td>{item.tran_type}</td>
+                    <td>{item.tran_from}</td>
+                    <td>{item.tran_to}</td>
+                    <td>
+                      {Intl.NumberFormat("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                        minimumFractionDigits: 0,
+                      }).format(item.tran_amount)}
+                    </td>
+                    <td>
+                      <img src={item.tran_receipt} width="100px" alt="Content" />
+                    </td>
+                    <td>{item.tran_note}</td>
+
+                  </tr>
+                );
+              })
+            }
+
+          </table>)
+      }) : null}
+    </div >
   );
 }
