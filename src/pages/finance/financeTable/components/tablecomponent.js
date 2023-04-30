@@ -1,34 +1,35 @@
 import { React, useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "./pagination";
 export default function Tablecomponent(props) {
   const [newData, setNewData] = useState(props.transactions);
-  console.log(props.transactions, "HGG");
-  const [pagination, setPagination] = useState({
-    totalpage: 0,
-    limit: props.fixedlimit,
-    pageno: 1,
-    pages: [],
-  });
 
-  const changepageno = (pageno) => {
-    setPagination({
-      ...pagination,
-      pageno: pageno,
-    });
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPageLimit = 2;
+  const firstIndex = currentPage;
+  const displayData = newData.slice(
+    (firstIndex - 1) * perPageLimit,
+    firstIndex * perPageLimit
+  );
+
+  const noPage = Math.ceil(newData.length / perPageLimit);
+  const number = [...Array(noPage + 1).keys()].slice(1);
+
+  const pageChange = (pageNo) => {
+    setCurrentPage(pageNo);
+    console.log(pageNo);
   };
 
-  useEffect(() => {
-    let pagesDisplay = [];
-    for (
-      let i = 1;
-      i <= Math.ceil(props.transactions.length / pagination.limit);
-      i++
-    ) {
-      pagesDisplay.push(i);
+  const previous = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
     }
-
-    setPagination({ ...pagination, pages: pagesDisplay });
-  }, []);
+  };
+  const next = () => {
+    if (currentPage !== noPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const [lastSortkey, setLastSortKey] = useState(null);
   const sortOrder = useRef("");
@@ -175,24 +176,128 @@ export default function Tablecomponent(props) {
   };
 
   return (
-    <table className="table main_table">
-      <thead>
-        <th onClick={() => sorting("tran_date")}>Transaction Date</th>
-        <th onClick={() => sorting("tran_month")}>Month Year</th>
-        <th onClick={() => sorting("tran_type")}>Transaction Type</th>
-        <th onClick={() => sorting("tran_from")}>Transaction From</th>
-        <th onClick={() => sorting("tran_to")}>To</th>
-        <th onClick={() => sorting("tran_amount")}>Amount</th>
-        <th onClick={() => sorting("tran_receipt")}>Receipt</th>
-        <th onClick={() => sorting("tran_note")}>Notes</th>
-      </thead>
-      <tbody>
-        {newData
-          .slice(
-            (pagination.pageno - 1) * pagination.limit,
-            pagination.pageno * pagination.limit
-          )
-          .map((item, index) => {
+    <>
+      <table class="table main_table">
+        <thead class="table-dark">
+          <tr>
+            {sortOrder.current == "asc" && lastSortkey == "tran_date" ? (
+              <th scope="col" onClick={() => sorting("tran_date")}>
+                Transaction Date
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_date" ? (
+              <th scope="col" onClick={() => sorting("tran_date")}>
+                Transaction Date
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_date")}>
+                Transaction Date
+              </th>
+            )}
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_month" ? (
+              <th scope="col" onClick={() => sorting("tran_month")}>
+                Month Year
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_month" ? (
+              <th scope="col" onClick={() => sorting("tran_month")}>
+                Month Year
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_month")}>
+                Month Year
+              </th>
+            )}
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_type" ? (
+              <th scope="col" onClick={() => sorting("tran_type")}>
+                Transaction Type
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_type" ? (
+              <th scope="col" onClick={() => sorting("tran_type")}>
+                Transaction Type
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_type")}>
+                Transaction Type
+              </th>
+            )}
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_from" ? (
+              <th scope="col" onClick={() => sorting("tran_from")}>
+                Transaction From
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_from" ? (
+              <th scope="col" onClick={() => sorting("tran_from")}>
+                Transaction From
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_from")}>
+                Transaction From
+              </th>
+            )}
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_to" ? (
+              <th scope="col" onClick={() => sorting("tran_to")}>
+                To
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_to" ? (
+              <th scope="col" onClick={() => sorting("tran_to")}>
+                To
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_to")}>
+                To
+              </th>
+            )}
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_amount" ? (
+              <th scope="col" onClick={() => sorting("tran_amount")}>
+                Amount
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_amount" ? (
+              <th scope="col" onClick={() => sorting("tran_amount")}>
+                Amount
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_amount")}>
+                Amount
+              </th>
+            )}
+
+            <th scope="col">Receipt</th>
+
+            {sortOrder.current == "asc" && lastSortkey == "tran_note" ? (
+              <th scope="col" onClick={() => sorting("tran_note")}>
+                Notes
+                <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
+              </th>
+            ) : sortOrder.current == "desc" && lastSortkey == "tran_note" ? (
+              <th scope="col" onClick={() => sorting("tran_note")}>
+                Notes
+                <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
+              </th>
+            ) : (
+              <th scope="col" onClick={() => sorting("tran_note")}>
+                Notes
+              </th>
+            )}
+            <th scope="col">View</th>
+          </tr>
+        </thead>
+        <tbody>
+          {displayData.map((item, index) => {
             return (
               <tr key={index}>
                 <td>{item.tran_date}</td>
@@ -211,11 +316,25 @@ export default function Tablecomponent(props) {
                   <img src={item.tran_receipt} width="100px" alt="Content" />
                 </td>
                 <td>{item.tran_note}</td>
+                <td>
+                  <Link to={`/user/${item.tran_id}`}>
+                    <i class="fa-solid fa-eye"></i>
+                  </Link>
+                </td>
               </tr>
             );
           })}
-      </tbody>
-      <Pagination pageTable={pagination} changepageno={changepageno} />
-    </table>
+        </tbody>
+      </table>
+      <Pagination
+        pageChange={pageChange}
+        newData={newData}
+        cuurentPage={currentPage}
+        number={number}
+        previous={previous}
+        next={next}
+        noPage={noPage}
+      />
+    </>
   );
 }

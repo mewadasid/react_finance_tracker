@@ -1,12 +1,10 @@
-
-import './App.css';
-import DisplayTable from './pages/finance/financeTable';
-
+import "./App.css";
+import Transactiontable from "./pages/finance/financeTable/index";
 
 function App() {
   return (
     <div className="App">
-      <DisplayTable />
+      <Transactiontable />
     </div>
   );
 }

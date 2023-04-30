@@ -18,7 +18,7 @@ export default function Form() {
 
   const [transaction, setTransaction] = useState(intialTransaction);
   const [formerror, setFormError] = useState({});
-
+  const [show, setShow] = useState(false);
   const monthOpiton = [
     { value: "JAN 2023", key: "jan" },
     { value: "FEB 2023", key: "feb" },
@@ -140,6 +140,7 @@ export default function Form() {
             setTransaction({ ...transaction, [name]: imgSrc });
           });
           reader.readAsDataURL(file_banner);
+          setShow(true);
         }
         break;
 
@@ -308,17 +309,27 @@ export default function Form() {
                   <label>Receipt : </label>
                 </td>
                 <td>
-                  <input
-                    type="file"
-                    name="tran_receipt"
-                    id="tranReceipt"
-                    onChange={handelChange}
-                  />
-                  <img
-                    src={transaction.tran_receipt}
-                    width="100"
-                    alt="content"
-                  />
+                  {show ? (
+                    <>
+                      <img
+                        src={transaction.tran_receipt}
+                        width="100"
+                        alt="content"
+                      />
+                      <i
+                        class="fa-solid fa-circle-xmark fa-lg mx-3"
+                        onClick={() => setShow(false)}
+                      />
+                    </>
+                  ) : (
+                    <input
+                      type="file"
+                      name="tran_receipt"
+                      id="tranReceipt"
+                      onChange={handelChange}
+                    />
+                  )}
+
                   <span className="fieldError">{formerror.file_error}</span>
                 </td>
               </tr>
