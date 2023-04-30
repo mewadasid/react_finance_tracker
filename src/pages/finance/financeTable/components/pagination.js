@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
-export default function Pagination({ pageTable, onclick, handlePage }) {
-    console.log(pageTable)
+export default function Pagination({ pageTable, changepageno }) {
+  console.log(pageTable);
+  return pageTable.pages.map((item) => {
     return (
-        pageTable.totalPage.map((item) => {
-            return <span className='page_number' onClick={() => handlePage(item)}>{item}</span>
-        })
-
-    )
-
+      <span className="page_number" onClick={() => changepageno(item)}>
+        {item}
+      </span>
+    );
+  });
 }
