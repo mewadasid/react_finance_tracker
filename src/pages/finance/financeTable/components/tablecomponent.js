@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from "react";
+import { React, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "./pagination";
 export default function Tablecomponent(props) {
@@ -45,13 +45,6 @@ export default function Tablecomponent(props) {
     performSort(sortBy);
   };
 
-  const groupBy = [
-    { value: "none", key: "none" },
-    { value: "Month Year", key: "tran_month" },
-    { value: "Transaction type", key: "tran_type" },
-    { value: "From Account", key: "tran_from" },
-    { value: "To Account", key: "tran_to" },
-  ];
   const month = [
     "JAN 2023",
     "FEB 2023",
@@ -180,12 +173,12 @@ export default function Tablecomponent(props) {
       <table class="table main_table">
         <thead class="table-dark">
           <tr>
-            {sortOrder.current == "asc" && lastSortkey == "tran_date" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_date" ? (
               <th scope="col" onClick={() => sorting("tran_date")}>
                 Transaction Date
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_date" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_date" ? (
               <th scope="col" onClick={() => sorting("tran_date")}>
                 Transaction Date
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -196,12 +189,12 @@ export default function Tablecomponent(props) {
               </th>
             )}
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_month" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_month" ? (
               <th scope="col" onClick={() => sorting("tran_month")}>
                 Month Year
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_month" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_month" ? (
               <th scope="col" onClick={() => sorting("tran_month")}>
                 Month Year
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -212,12 +205,12 @@ export default function Tablecomponent(props) {
               </th>
             )}
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_type" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_type" ? (
               <th scope="col" onClick={() => sorting("tran_type")}>
                 Transaction Type
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_type" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_type" ? (
               <th scope="col" onClick={() => sorting("tran_type")}>
                 Transaction Type
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -228,12 +221,12 @@ export default function Tablecomponent(props) {
               </th>
             )}
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_from" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_from" ? (
               <th scope="col" onClick={() => sorting("tran_from")}>
                 Transaction From
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_from" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_from" ? (
               <th scope="col" onClick={() => sorting("tran_from")}>
                 Transaction From
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -244,12 +237,12 @@ export default function Tablecomponent(props) {
               </th>
             )}
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_to" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_to" ? (
               <th scope="col" onClick={() => sorting("tran_to")}>
                 To
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_to" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_to" ? (
               <th scope="col" onClick={() => sorting("tran_to")}>
                 To
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -260,12 +253,12 @@ export default function Tablecomponent(props) {
               </th>
             )}
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_amount" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_amount" ? (
               <th scope="col" onClick={() => sorting("tran_amount")}>
                 Amount
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_amount" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_amount" ? (
               <th scope="col" onClick={() => sorting("tran_amount")}>
                 Amount
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -278,12 +271,12 @@ export default function Tablecomponent(props) {
 
             <th scope="col">Receipt</th>
 
-            {sortOrder.current == "asc" && lastSortkey == "tran_note" ? (
+            {sortOrder.current === "asc" && lastSortkey === "tran_note" ? (
               <th scope="col" onClick={() => sorting("tran_note")}>
                 Notes
                 <i class="fa-sharp fa-solid fa-caret-up mx-3"></i>
               </th>
-            ) : sortOrder.current == "desc" && lastSortkey == "tran_note" ? (
+            ) : sortOrder.current === "desc" && lastSortkey === "tran_note" ? (
               <th scope="col" onClick={() => sorting("tran_note")}>
                 Notes
                 <i class="fa-sharp fa-solid fa-caret-down mx-3"></i>
@@ -294,6 +287,7 @@ export default function Tablecomponent(props) {
               </th>
             )}
             <th scope="col">View</th>
+            <th scope="col">Edit Data</th>
           </tr>
         </thead>
         <tbody>
@@ -319,6 +313,11 @@ export default function Tablecomponent(props) {
                 <td>
                   <Link to={`/user/${item.tran_id}`}>
                     <i class="fa-solid fa-eye"></i>
+                  </Link>
+                </td>
+                <td>
+                  <Link to={`/edit/${item.tran_id}`}>
+                    <i class="fa-solid fa-pen-to-square"></i>
                   </Link>
                 </td>
               </tr>

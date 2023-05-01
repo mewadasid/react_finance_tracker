@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/style.css";
 
 import Tablecomponent from "./tablecomponent";
 
 export default function Transactiontable() {
-  const sortOrder = useRef("");
+
   const transDetail = JSON.parse(localStorage.getItem("Transaction"));
 
   const [transactions, setTransaction] = useState(transDetail);
@@ -44,7 +44,6 @@ export default function Transactiontable() {
       <Tablecomponent transactions={transactions} fixedlimit={fixedlimit} />
 
       {Object.keys(groupData).map((item) => {
-        debugger;
         console.log("hello group", item, groupData[item]);
         return (
           <Tablecomponent

@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import "../css/style.css";
 export default function Displayuser() {
   const { id } = useParams();
-  console.log(id);
+
   const transDetail = JSON.parse(localStorage.getItem("Transaction"));
 
   return (
@@ -12,8 +12,9 @@ export default function Displayuser() {
         <fieldset disabled>
           <legend>Your Transaction</legend>
           {Object.values(transDetail)
-            .filter((data) => data.tran_id == id)
-            .map((item) => {
+            .filter((data) => data.tran_id == id).map((item) => {
+
+              console.log(item.tran_date);
               return (
                 <div key={id}>
                   <div className="row">

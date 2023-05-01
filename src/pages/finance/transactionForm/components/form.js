@@ -2,24 +2,44 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Selectcombo from "./comboBox";
 import "../css/formStyle.css";
-export default function Form() {
+export default function Form({ formValues, userIndex, userId }) {
+  console.log(formValues, "FORM")
   const navigate = useNavigate();
-  const intialTransaction = {
-    tran_id: Math.ceil(Math.random() * 100),
-    tran_date: "",
-    tran_month: "",
-    tran_type: "",
-    tran_from: "",
-    tran_to: "",
-    tran_amount: "",
-    tran_receipt: "",
-    tran_note: "",
-  };
+  let intialTransaction;
+  formValues ? intialTransaction = {
+    tran_id: formValues.tran_id,
+    tran_date: formValues.tran_date,
+    tran_month: formValues.tran_month,
+    tran_type: formValues.tran_type,
+    tran_from: formValues.tran_from,
+    tran_to: formValues.tran_to,
+    tran_amount: formValues.tran_amount,
+    tran_receipt: formValues.tran_receipt,
+    tran_note: formValues.tran_note,
+  } :
+    intialTransaction = {
+      tran_date: "",
+      tran_month: "",
+      tran_type: "",
+      tran_from: "",
+      tran_to: "",
+      tran_amount: "",
+      tran_receipt: "",
+      tran_note: "",
+    };
 
   const [transaction, setTransaction] = useState(intialTransaction);
   const [formerror, setFormError] = useState({});
-  const [show, setShow] = useState(false);
+
+
+
+  const setShow = () => {
+    setTransaction({ ...transaction, tran_receipt: "" });
+  }
+
+
   const monthOpiton = [
+    { value: "", key: "" },
     { value: "JAN 2023", key: "jan" },
     { value: "FEB 2023", key: "feb" },
     { value: "MARCH 2023", key: "march" },
@@ -49,10 +69,11 @@ export default function Form() {
     { value: "Big Block", key: "Big Block" },
   ];
 
-  const handelSubmit = (e) => {
-    const error = emptyCheck();
 
-    console.log(error, "EORORORO");
+
+  const handelSubmit = (e) => {
+
+    const error = emptyCheck();
 
     switch (error) {
       case false:
@@ -60,9 +81,11 @@ export default function Form() {
         alert("Please Select all field");
         e.preventDefault();
         break;
+
       case undefined:
+
         setFormError((c) => {
-          console.log(c);
+
           const { field_empty, ...rest } = c;
           return rest;
         });
@@ -80,20 +103,51 @@ export default function Form() {
         break;
     }
   };
+
   const setLocalstorage = () => {
+
+    setTransaction({ ...transaction, })
     let getData = JSON.parse(localStorage.getItem("Transaction"));
-    console.log(getData);
+
+    console.log(getData, "GETDATAAA")
     if (getData !== null) {
-      getData.push(transaction);
+
+
+      if (formValues) {
+        const index = Object.values(getData).map((item) => item.tran_id).findIndex((userIndex) => userIndex == formValues.tran_id)
+        console.log(index, "USE INED")
+
+        if (index) {
+
+          console.log(transaction, "UPDATE TRASN")
+          getData[index] = Object.assign(getData[index], transaction);
+          console.log(getData, "NEW GETDATA");
+        }
+      }
+      else {
+
+        const previousId = getData[getData.length - 1].tran_id;
+        console.log(previousId)
+        transaction.tran_id = previousId + 1;
+        getData.push(transaction);
+      }
+
       localStorage.setItem("Transaction", JSON.stringify(getData));
     } else {
-      localStorage.setItem("Transaction", JSON.stringify([transaction]));
+
+      const transaction_clone = { ...transaction };
+      console.log(transaction_clone)
+      transaction_clone.tran_id = 1;
+
+      localStorage.setItem("Transaction", JSON.stringify([transaction_clone]));
     }
   };
   const handelChange = (e, index) => {
     const { name, value } = e.target;
+
     setTransaction({ ...transaction, [name]: value });
 
+    console.log(name + "--" + value);
     switch (name) {
       case "tran_receipt":
         if (e.target.files[0].size > "500000") {
@@ -116,9 +170,9 @@ export default function Form() {
 
           console.log(typeof fileExtension);
           if (
-            fileExtension.toLowerCase() == "jpeg" ||
-            fileExtension.toLowerCase() == "jpg" ||
-            fileExtension.toLowerCase() == "png"
+            fileExtension.toLowerCase() === "jpeg" ||
+            fileExtension.toLowerCase() === "jpg" ||
+            fileExtension.toLowerCase() === "png"
           ) {
             setFormError((c) => {
               console.log(c);
@@ -149,11 +203,24 @@ export default function Form() {
         break;
     }
   };
-  console.log(formerror);
 
   useEffect(
     (e) => {
-      console.log(transaction);
+      if (transaction["tran_date"] !== "") {
+        const date = new Date();
+        const currentDate = date.toISOString().split('T')[0];
+
+        if (transaction["tran_date"] > currentDate) {
+          setFormError({ ...formerror, date_error: " Date cannot be greater than today" })
+        }
+        else {
+          setFormError((c) => {
+            console.log(c);
+            const { date_error, ...rest } = c;
+            return rest;
+          });
+        }
+      }
       if ((transaction["tran_from"] && transaction["tran_to"]) !== "") {
         if (transaction["tran_from"] === transaction["tran_to"]) {
           setFormError({ ...formerror, account_same: "Both same" });
@@ -183,24 +250,33 @@ export default function Form() {
         }
       }
 
-      if (transaction["tran_note"] !== "") {
-        if (transaction["tran_note"].length > 250) {
-          setFormError({ ...formerror, note_error: "Length is reached!!!" });
-        } else {
-          setFormError((c) => {
-            console.log(c);
-            const { note_error, ...rest } = c;
-            return rest;
-          });
+      if (transaction['tran_note'] !== "") {
+        if (transaction['tran_note'].trim() === "") {
+          setFormError({ ...formerror, note_error: "write something white space not allowed" });
+        }
+        else {
+          if (transaction["tran_note"].length > 250) {
+            setFormError({ ...formerror, note_error: "Length is reached!!!" });
+          } else {
+            setFormError((c) => {
+              console.log(c);
+              const { note_error, ...rest } = c;
+              return rest;
+            });
+          }
         }
       }
+
+
     },
     //eslint-disable-next-line
     [transaction]
   );
 
   const emptyCheck = () => {
+
     for (const key in transaction) {
+
       if (transaction[key] === "") {
         return false;
       }
@@ -232,8 +308,9 @@ export default function Form() {
                     name="tran_date"
                     id="tranDate"
                     onChange={handelChange}
+                    value={transaction.tran_date}
                   />
-                  <span className="fieldError"></span>
+                  <span className="fieldError">{formerror.date_error}</span>
                 </td>
               </tr>
               <tr>
@@ -246,6 +323,7 @@ export default function Form() {
                     id="tranMonth"
                     option={monthOpiton}
                     onchange={handelChange}
+                    formValues={transaction.tran_month}
                   />
                 </td>
               </tr>
@@ -259,6 +337,9 @@ export default function Form() {
                     id="tranType"
                     option={transactionType}
                     onchange={handelChange}
+                    formValues={transaction.tran_type}
+
+
                   />
                 </td>
               </tr>
@@ -272,6 +353,9 @@ export default function Form() {
                     id="tranFrom"
                     option={fromToAccount}
                     onchange={handelChange}
+                    formValues={transaction.tran_from}
+
+
                   />
                   <span className="fieldError">{formerror.account_same}</span>
                 </td>
@@ -286,6 +370,9 @@ export default function Form() {
                     id="tranTo"
                     option={fromToAccount}
                     onchange={handelChange}
+                    formValues={transaction.tran_to}
+
+
                   />
                   <span className="fieldError">{formerror.account_same}</span>
                 </td>
@@ -293,6 +380,7 @@ export default function Form() {
               <tr>
                 <td>
                   <label>Amount : </label>
+
                 </td>
                 <td>
                   <input
@@ -300,6 +388,8 @@ export default function Form() {
                     name="tran_amount"
                     id="tranAmount"
                     onChange={handelChange}
+                    value={transaction.tran_amount}
+
                   />
                   <span className="fieldError">{formerror.amount_error}</span>
                 </td>
@@ -309,26 +399,24 @@ export default function Form() {
                   <label>Receipt : </label>
                 </td>
                 <td>
-                  {show ? (
+
+                  {transaction.tran_receipt !== "" ?
                     <>
-                      <img
-                        src={transaction.tran_receipt}
+                      <img src={transaction.tran_receipt}
                         width="100"
                         alt="content"
                       />
                       <i
                         class="fa-solid fa-circle-xmark fa-lg mx-3"
-                        onClick={() => setShow(false)}
+                        onClick={() => setShow()}
                       />
                     </>
-                  ) : (
-                    <input
+                    : <input
                       type="file"
                       name="tran_receipt"
                       id="tranReceipt"
                       onChange={handelChange}
-                    />
-                  )}
+                    />}
 
                   <span className="fieldError">{formerror.file_error}</span>
                 </td>
@@ -343,6 +431,8 @@ export default function Form() {
                     id="tranNote"
                     rows="3"
                     onChange={handelChange}
+                    value={transaction.tran_note}
+
                   ></textarea>
                   <span className="fieldError">{formerror.note_error}</span>
                 </td>
