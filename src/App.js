@@ -1,10 +1,10 @@
 import "./App.css";
-import Transactiontable from "./pages/finance/financeTable/index";
+import Form from "./pages/finance/transactionForm/components/form";
 
 function App() {
   return (
     <div className="App">
-      <Transactiontable />
+      <Form />
     </div>
   );
 }

@@ -9,6 +9,11 @@ export default function Displayuser() {
   return (
     <div>
       <form className="user_form">
+        <Link to={"/displayData"}>
+          <button type="button" className="btn btn-primary my-4">
+            Go To Transaction Hisotry
+          </button>
+        </Link>
         <fieldset disabled>
           <legend>Your Transaction</legend>
           {Object.values(transDetail)
@@ -141,11 +146,7 @@ export default function Displayuser() {
               );
             })}
         </fieldset>
-        <Link to={"/"}>
-          <button type="button" className="btn btn-primary">
-            Go To Transaction Hisotry
-          </button>
-        </Link>
+
       </form>
     </div>
   );

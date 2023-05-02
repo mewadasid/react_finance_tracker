@@ -5,7 +5,7 @@ export default function Tablecomponent(props) {
   const [newData, setNewData] = useState(props.transactions);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const perPageLimit = 2;
+  const perPageLimit = 3;
   const firstIndex = currentPage;
   const displayData = newData.slice(
     (firstIndex - 1) * perPageLimit,
@@ -34,6 +34,7 @@ export default function Tablecomponent(props) {
   const [lastSortkey, setLastSortKey] = useState(null);
   const sortOrder = useRef("");
   const sorting = (sortBy) => {
+    setCurrentPage(1);
     setLastSortKey(sortBy);
     if (sortBy === lastSortkey && sortOrder.current === "asc") {
       sortOrder.current = "desc";

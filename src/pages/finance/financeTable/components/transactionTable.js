@@ -10,7 +10,7 @@ export default function Transactiontable() {
 
   const [transactions, setTransaction] = useState(transDetail);
   const [groupData, setGroupData] = useState({});
-  const fixedlimit = 3;
+
   const handleChange = (e) => {
     const group = e.target.value;
     console.log(group);
@@ -29,7 +29,7 @@ export default function Transactiontable() {
 
   return (
     <div>
-      <Link to={"/createTransaction"}>
+      <Link to={"/"}>
         <button type="button" className="btn btn-primary my-4 ">
           Create Transaction
         </button>
@@ -41,14 +41,13 @@ export default function Transactiontable() {
         <option value="tran_from">From Account</option>
         <option value="tran_to">To Account</option>
       </select>
-      <Tablecomponent transactions={transactions} fixedlimit={fixedlimit} />
+      <Tablecomponent transactions={transactions} />
 
       {Object.keys(groupData).map((item) => {
         console.log("hello group", item, groupData[item]);
         return (
           <Tablecomponent
             transactions={groupData[item]}
-            fixedlimit={fixedlimit}
           />
         );
       })}

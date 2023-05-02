@@ -27,7 +27,6 @@ export default function Form({ formValues, userIndex, userId }) {
       tran_receipt: "",
       tran_note: "",
     };
-
   const [transaction, setTransaction] = useState(intialTransaction);
   const [formerror, setFormError] = useState({});
 
@@ -73,9 +72,10 @@ export default function Form({ formValues, userIndex, userId }) {
 
   const handelSubmit = (e) => {
 
-    const error = emptyCheck();
 
-    switch (error) {
+    setFormError(emptyCheck());
+
+    switch (true) {
       case false:
         setFormError({ ...formerror, field_empty: "Please fill field" });
         alert("Please Select all field");
@@ -94,7 +94,7 @@ export default function Form({ formValues, userIndex, userId }) {
           e.preventDefault();
         } else {
           setLocalstorage();
-          navigate("/");
+          navigate("/displayData");
         }
         break;
 
@@ -103,15 +103,12 @@ export default function Form({ formValues, userIndex, userId }) {
         break;
     }
   };
-
+  console.log(formerror)
   const setLocalstorage = () => {
 
     setTransaction({ ...transaction, })
     let getData = JSON.parse(localStorage.getItem("Transaction"));
-
-    console.log(getData, "GETDATAAA")
     if (getData !== null) {
-
 
       if (formValues) {
         const index = Object.values(getData).map((item) => item.tran_id).findIndex((userIndex) => userIndex == formValues.tran_id)
@@ -234,7 +231,7 @@ export default function Form({ formValues, userIndex, userId }) {
       }
       if (transaction["tran_amount"] !== "") {
         if (
-          transaction["tran_amount"] === 0 ||
+          transaction["tran_amount"] === '0' ||
           transaction["tran_amount"] < 0
         ) {
           setFormError({
@@ -275,177 +272,175 @@ export default function Form({ formValues, userIndex, userId }) {
 
   const emptyCheck = () => {
 
-    for (const key in transaction) {
-
-      if (transaction[key] === "") {
-        return false;
-      }
+    const error = {};
+    switch (transaction) {
+      case transaction.tran_date == "":
+        error.empty_date_error = "Please Enter date";
+        break;
+      case transaction.tran_month == "":
+        error.empty_month_error = "Please Select transaction month";
+        break;
+      case transaction.tran_type == "":
+        error.empty_type_error = "Please Select transaction type";
+        break;
+      case transaction.tran_from == "":
+        error.empty_from_error = "Please Select transaction From";
+        break;
+      case transaction.tran_to == "":
+        error.empty_to_error = "Please Select transaction to";
+        break;
+      case transaction.tran_amount == "":
+        error.empty_amount_error = "Please enter amount";
+        break;
+      case transaction.tran_receipt == "":
+        error.empty_receipt_error = "Please Select receipt";
+        break;
+      case transaction.tran_note == "":
+        error.empty_type_error = "Please enter notes";
+        break;
+      default:
+        break;
     }
+    return error;
   };
 
   return (
     <div>
       <div>
-        {formerror.field_empty ? (
-          <div className="formWrapper">{formerror.field_empty}</div>
-        ) : null}
-
         <form
           className="userform"
           encType="multipart/form-data"
           onSubmit={handelSubmit}
         >
-          <table id="main_table">
-            <tbody>
-              <tr>
-                <td>
-                  <label>Transaction Date : </label>
-                </td>
+          {formerror.field_empty ? (
+            <div className="formWrapper mb-3">{formerror.field_empty}</div>
+          ) : null}
+          <div className="userFormWraper">
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Date:</label>
+              <div class="col-sm-10">
+                <input
+                  type="date"
+                  name="tran_date"
+                  id="tranDate"
+                  onChange={handelChange}
+                  value={transaction.tran_date}
+                />
+                <span className="fieldError">{formerror.date_error}</span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Month:</label>
+              <div class="col-sm-10">
+                <Selectcombo
+                  name="tran_month"
+                  id="tranMonth"
+                  option={monthOpiton}
+                  onchange={handelChange}
+                  formValues={transaction.tran_month}
+                />
 
-                <td>
-                  <input
-                    type="date"
-                    name="tran_date"
-                    id="tranDate"
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Type:</label>
+              <div class="col-sm-10">
+                <Selectcombo
+                  name="tran_type"
+                  id="tranType"
+                  option={transactionType}
+                  onchange={handelChange}
+                  formValues={transaction.tran_type}
+                />
+
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction From:</label>
+              <div class="col-sm-10">
+                <Selectcombo
+                  name="tran_from"
+                  id="tranFrom"
+                  option={fromToAccount}
+                  onchange={handelChange}
+                  formValues={transaction.tran_from}
+
+
+                />
+                <span className="fieldError">{formerror.account_same}</span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction To:</label>
+              <div class="col-sm-10">
+                <Selectcombo
+                  name="tran_to"
+                  id="tranFrom"
+                  option={fromToAccount}
+                  onchange={handelChange}
+                  formValues={transaction.tran_to}
+
+                />
+                <span className="fieldError">{formerror.account_same}</span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Amount:</label>
+              <div class="col-sm-10">
+                <input
+                  type="number"
+                  name="tran_amount"
+                  id="tranAmount"
+                  onChange={handelChange}
+                  value={transaction.tran_amount}
+
+                />
+                <span className="fieldError">{formerror.amount_error}</span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Receipt:</label>
+              <div class="col-sm-10">
+                {transaction.tran_receipt !== "" ?
+                  <>
+                    <img src={transaction.tran_receipt}
+                      width="100"
+                      alt="content"
+                    />
+                    <i
+                      class="fa-solid fa-circle-xmark fa-lg mx-3"
+                      onClick={() => setShow()}
+                    />
+                  </>
+                  : <input
+                    type="file"
+                    name="tran_receipt"
+                    id="tranReceipt"
                     onChange={handelChange}
-                    value={transaction.tran_date}
-                  />
-                  <span className="fieldError">{formerror.date_error}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Month Year : </label>
-                </td>
-                <td>
-                  <Selectcombo
-                    name="tran_month"
-                    id="tranMonth"
-                    option={monthOpiton}
-                    onchange={handelChange}
-                    formValues={transaction.tran_month}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Transaction Type : </label>
-                </td>
-                <td>
-                  <Selectcombo
-                    name="tran_type"
-                    id="tranType"
-                    option={transactionType}
-                    onchange={handelChange}
-                    formValues={transaction.tran_type}
+                  />}
 
+                <span className="fieldError">{formerror.file_error}</span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Note:</label>
+              <div class="col-sm-10">
+                <textarea
+                  name="tran_note"
+                  id="tranNote"
+                  rows="3"
+                  onChange={handelChange}
+                  value={transaction.tran_note}
 
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>From Account : </label>
-                </td>
-                <td>
-                  <Selectcombo
-                    name="tran_from"
-                    id="tranFrom"
-                    option={fromToAccount}
-                    onchange={handelChange}
-                    formValues={transaction.tran_from}
+                ></textarea>
+                <span className="fieldError">{formerror.note_error}</span>
+              </div>
+            </div>
 
-
-                  />
-                  <span className="fieldError">{formerror.account_same}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>To Account : </label>
-                </td>
-                <td>
-                  <Selectcombo
-                    name="tran_to"
-                    id="tranTo"
-                    option={fromToAccount}
-                    onchange={handelChange}
-                    formValues={transaction.tran_to}
-
-
-                  />
-                  <span className="fieldError">{formerror.account_same}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Amount : </label>
-
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    name="tran_amount"
-                    id="tranAmount"
-                    onChange={handelChange}
-                    value={transaction.tran_amount}
-
-                  />
-                  <span className="fieldError">{formerror.amount_error}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Receipt : </label>
-                </td>
-                <td>
-
-                  {transaction.tran_receipt !== "" ?
-                    <>
-                      <img src={transaction.tran_receipt}
-                        width="100"
-                        alt="content"
-                      />
-                      <i
-                        class="fa-solid fa-circle-xmark fa-lg mx-3"
-                        onClick={() => setShow()}
-                      />
-                    </>
-                    : <input
-                      type="file"
-                      name="tran_receipt"
-                      id="tranReceipt"
-                      onChange={handelChange}
-                    />}
-
-                  <span className="fieldError">{formerror.file_error}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Notes : </label>
-                </td>
-                <td>
-                  <textarea
-                    name="tran_note"
-                    id="tranNote"
-                    rows="3"
-                    onChange={handelChange}
-                    value={transaction.tran_note}
-
-                  ></textarea>
-                  <span className="fieldError">{formerror.note_error}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button id="submitBtn">Submit</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
         </form>
       </div>
-    </div>
+    </div >
   );
 }

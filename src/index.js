@@ -9,21 +9,34 @@ import Form from "./pages/finance/transactionForm/components/form";
 import Displayuser from "./pages/finance/financeTable/components/displayUser";
 import Edituser from "./pages/finance/financeTable/components/editUser";
 
+
+import Transactiontable from "./pages/finance/financeTable/components/transactionTable";
+
+import LoginPage from "./pages/finance/login";
+import RegisterPage from "./pages/finance/register";
+import Protected from "./pages/finance/protected/components/protectedRoute";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
+      <Route path="/" element={<Protected Cmp={App} />}></Route>
+      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/register" element={<RegisterPage />}></Route>
+      <Route path="/displayData" element={<Protected Cmp={Transactiontable} />}></Route>
+      <Route path="/user/:id" element={<Protected Cmp={Displayuser} />}></Route>
+      <Route path="/edit/:id" element={<Protected Cmp={Edituser} />}></Route>
+    </Routes>
+    {/* <Routes>
       <Route path="/" element={<App />}></Route>
+      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/register" element={<RegisterPage />}></Route>
       <Route path="/createTransaction" element={<Form />}></Route>
+      <Route path="/displayData" element={<Transactiontable />}></Route>
       <Route path="/user/:id" element={<Displayuser />}></Route>
       <Route path="/edit/:id" element={<Edituser />}></Route>
-
-      {/* <Route path="/user" element={<Userdisplay />}></Route>
-      <Route path="/post" element={<Userpost />}></Route>
-      <Route path="/user/createUser" element={<Usercreate />}></Route>
-      <Route path="/post/createPost" element={<Postcreate />}></Route> */}
-    </Routes>
-  </BrowserRouter>
+    </Routes> */}
+  </BrowserRouter >
 );
 
 // If you want to start measuring performance in your app, pass a function
