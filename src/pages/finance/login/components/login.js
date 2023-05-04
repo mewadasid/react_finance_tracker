@@ -3,17 +3,29 @@ import '../css/loginStyle.css';
 import { useNavigate } from 'react-router-dom';
 export default function Login() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const getToken = localStorage.getItem("loginToken")
+        if (getToken) {
+            navigate('/');
+        }
+    })
+
     const [loginData, setLoginData] = useState(
         {
             userEmail: "",
             userPassword: "",
         }
     );
-    const [errors, setError] = useState([]);
+    const [errors, setError] = useState({});
     const register = JSON.parse(localStorage.getItem('userRegister'));
-    const email = register.userEmail;
-    const password = register.userPassword;
-    console.log(email)
+
+    let credential = [];
+    register.map((item, index) =>
+        credential.push({ email: register[index].userEmail, password: register[index].userPassword })
+    )
+
+    console.log(credential)
     const stopFIrst = useRef(true);
     useEffect(() => {
 
@@ -22,10 +34,13 @@ export default function Login() {
             return;
         }
         else {
-
             if (loginData['userEmail'].trim() !== "") {
                 setError((c) => {
                     const { email_field_empty, ...rest } = c;
+                    return rest;
+                })
+                setError((c) => {
+                    const { auhtenticate_email_error, ...rest } = c;
                     return rest;
                 })
             }
@@ -34,70 +49,92 @@ export default function Login() {
                     const { password_field_empty, ...rest } = c;
                     return rest;
                 })
+                setError((c) => {
+                    const { auhtenticate_password_error, ...rest } = c;
+                    return rest;
+                })
             }
 
         }
-
 
     }, [loginData])
 
+    const flag = useRef(false);
     const handleSubmit = (e) => {
+        const empty_error = emptyCheck();
 
-        if (loginData.userEmail.trim() === "" && loginData.userPassword.trim() === "") {
-            setError({ ...errors, email_field_empty: "Please Fill Email Field", password_field_empty: "Please Fill Password Field" });
-            e.preventDefault();
+
+
+        if (Object.keys(empty_error).length > 0) {
+            setError(empty_error);
+            e.preventDefault()
         }
         else {
-            if (loginData.userEmail.trim() === "") {
-                setError({ ...errors, email_field_empty: "Please Fill Email Field", });
-                e.preventDefault();
-            }
-            else if (loginData.userPassword.trim() === "") {
-                setError({ ...errors, password_field_empty: "Please Fill Password Field" });
-                e.preventDefault();
-            }
-            else {
-                if (Object.keys(errors).length > 0) {
-                    e.preventDefault();
-                }
-                else {
-                    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                    let token;
-                    for (let i = 0; i < 10; i++) {
-
-                        token += characters.charAt(Math.floor(Math.random() * characters.length))
-                    }
-                    localStorage.setItem('loginToken', JSON.stringify(token));
-                    navigate('/createTransaction');
-                }
-            }
-
-            if (loginData.userEmail !== "" && loginData.userPassword !== "") {
-                debugger
-                if (loginData.userEmail !== email) {
-                    setError({ ...errors, auhtenticate_email_error: "Entered EmailId is wrong" })
-                    e.preventDefault();
-                }
-                else {
+            debugger
+            debugger
+            credential.map((item, index) => {
+                if (credential[index].email === loginData.userEmail && credential[index].password === loginData.userPassword) {
                     setError((c) => {
                         const { auhtenticate_email_error, ...rest } = c;
                         return rest;
                     })
-                }
-                if (loginData.userPassword !== password) {
-                    setError({ ...errors, auhtenticate_password_error: "Entered Password is wrong" })
-                    e.preventDefault();
+                    flag.current = true;
+
                 }
                 else {
-                    setError((c) => {
-                        const { auhtenticate_password_error, ...rest } = c;
-                        return rest;
-                    })
+                    setError({ ...errors, auhtenticate_email_error: "Entered credential is wrong" })
+                    e.preventDefault();
+                    flag.current = false;
+
+
                 }
+
+            }
+
+            )
+        }
+
+        if (flag.current == true) {
+            if (Object.keys(errors).length > 0 || flag.current == false) {
+                e.preventDefault();
+                flag.current = false;
+            }
+            else {
+                flag.current = true;
+                setLocalStorage();
             }
         }
 
     }
+
+    const emptyCheck = () => {
+        const error = {};
+        if (loginData.userEmail === "") {
+            error['email_field_empty'] = "Please Fill Email Field";
+        }
+        if (loginData.userPassword === "") {
+            error['password_field_empty'] = "Please Fill Password Field";
+        }
+        return error;
+    }
+
+    const setLocalStorage = () => {
+        if (flag.current == true) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let token = '';
+            for (let i = 0; i < 10; i++) {
+
+                token += characters.charAt(Math.floor(Math.random() * characters.length))
+            }
+            localStorage.setItem('loginToken', JSON.stringify(token));
+            navigate('/');
+        }
+        else {
+            alert('There is somthing error!!!!')
+        }
+    }
+
+
 
     const handleChange = (e) => {
         setError((c) => {
@@ -160,7 +197,7 @@ export default function Login() {
                     <input type="password" name='userPassword' class="form-control" onChange={handleChange} id="exampleInputPassword1" placeholder='password' />
                     <div><span>{errors.password_wrong}</span></div>
                     <div><span>{errors.password_field_empty}</span></div>
-                    <div><span>{errors.auhtenticate_password_error}</span></div>
+                    <div><span>{errors.auhtenticate_email_error}</span></div>
 
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>

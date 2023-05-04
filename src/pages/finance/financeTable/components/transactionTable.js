@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/style.css";
 
 import Tablecomponent from "./tablecomponent";
 
 export default function Transactiontable() {
-
+  const navigate = useNavigate();
   const transDetail = JSON.parse(localStorage.getItem("Transaction"));
 
   const [transactions, setTransaction] = useState(transDetail);
   const [groupData, setGroupData] = useState({});
+
 
   const handleChange = (e) => {
     const group = e.target.value;
@@ -27,13 +28,19 @@ export default function Transactiontable() {
     setGroupData(groupedMap);
   };
 
+  const remove = () => {
+    localStorage.removeItem("loginToken");
+    navigate('/login')
+  }
+
   return (
     <div>
-      <Link to={"/"}>
+      <Link to={"createTransaction"}>
         <button type="button" className="btn btn-primary my-4 ">
           Create Transaction
         </button>
       </Link>
+
       <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
         <option value=""></option>
         <option value="tran_month">Month Year</option>
@@ -41,9 +48,11 @@ export default function Transactiontable() {
         <option value="tran_from">From Account</option>
         <option value="tran_to">To Account</option>
       </select>
+      <button type="button" onClick={() => remove()} className="btn btn-primary mx-2 d-inline-flex justify-content-end">LOGOUT</button>
       <Tablecomponent transactions={transactions} />
 
       {Object.keys(groupData).map((item) => {
+        console.log(item)
         console.log("hello group", item, groupData[item]);
         return (
           <Tablecomponent
@@ -51,6 +60,8 @@ export default function Transactiontable() {
           />
         );
       })}
+
+
     </div>
   );
 }

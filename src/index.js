@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./index.css";
-import App from "./App";
+
 import reportWebVitals from "./reportWebVitals";
 import Form from "./pages/finance/transactionForm/components/form";
 import Displayuser from "./pages/finance/financeTable/components/displayUser";
@@ -20,22 +20,20 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Protected Cmp={App} />}></Route>
-      <Route path="/login" element={<LoginPage />}></Route>
-      <Route path="/register" element={<RegisterPage />}></Route>
-      <Route path="/displayData" element={<Protected Cmp={Transactiontable} />}></Route>
-      <Route path="/user/:id" element={<Protected Cmp={Displayuser} />}></Route>
-      <Route path="/edit/:id" element={<Protected Cmp={Edituser} />}></Route>
+      <Route path="/">
+        <Route path="login" element={<LoginPage />}></Route>
+        <Route path="register"  element={<RegisterPage />}></Route>
+
+        <Route path="displayData">
+          <Route path="" element={<Protected Cmp={<Transactiontable />} />}></Route>
+          <Route path="createTransaction" element={<Protected Cmp={<Form />} />}></Route>
+          <Route path=":id" element={<Protected Cmp={<Displayuser />} />}></Route>
+          <Route path="edit/:id" element={<Protected Cmp={<Edituser />} />}></Route>
+        </Route>
+        <Route path="" element={<Navigate to={'/displayData'}></Navigate>}></Route>
+      </Route>
+
     </Routes>
-    {/* <Routes>
-      <Route path="/" element={<App />}></Route>
-      <Route path="/login" element={<LoginPage />}></Route>
-      <Route path="/register" element={<RegisterPage />}></Route>
-      <Route path="/createTransaction" element={<Form />}></Route>
-      <Route path="/displayData" element={<Transactiontable />}></Route>
-      <Route path="/user/:id" element={<Displayuser />}></Route>
-      <Route path="/edit/:id" element={<Edituser />}></Route>
-    </Routes> */}
   </BrowserRouter >
 );
 

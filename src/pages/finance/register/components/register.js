@@ -1,7 +1,13 @@
+import { setlocale } from 'node-calendar';
 import { React, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+
+    const getRegister = JSON.parse(localStorage.getItem("userRegister"));
+    debugger
+
+
     const navigate = useNavigate();
     const [registerData, setRegisterData] = useState(
         {
@@ -12,9 +18,10 @@ export default function Register() {
     );
     const [errors, setError] = useState([]);
 
+
     const stopFIrst = useRef(true);
     useEffect(() => {
-        console.log(1);
+
         if (stopFIrst.current === true) {
             stopFIrst.current = false;
             return;
@@ -50,9 +57,8 @@ export default function Register() {
                 e.preventDefault();
             }
             else {
-                e.preventDefault();
-                localStorage.setItem("userRegister", JSON.stringify(registerData));
-                navigate('/login');
+                setLocaleStorage();
+
             }
         }
 
@@ -60,6 +66,19 @@ export default function Register() {
     }
     console.log(errors.length)
 
+    const setLocaleStorage = () => {
+        debugger
+        if (getRegister !== null) {
+            getRegister.push(registerData);
+            localStorage.setItem("userRegister", JSON.stringify(getRegister));
+            navigate('/login');
+        }
+        else {
+            localStorage.setItem("userRegister", JSON.stringify([registerData]));
+            navigate('/login');
+
+        }
+    }
 
 
     const handleChange = (e) => {
@@ -78,6 +97,13 @@ export default function Register() {
                         const { email_wrong, ...rest } = c;
                         return rest;
                     });
+                    getRegister.map(({ userEmail }) => {
+                        if (value === userEmail) {
+                            setError({ ...errors, email_wrong: 'This Email is already exist' })
+                        }
+                        return 0;
+                    })
+
                 }
                 break;
 
