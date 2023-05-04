@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Selectcombo from "./comboBox";
+import { monthOpiton, transactionType, fromToAccount } from '../../utils/constant'
 import "../css/formStyle.css";
 export default function Form({ formValues, userIndex, userId }) {
   console.log(formValues, "FORM")
@@ -34,40 +35,6 @@ export default function Form({ formValues, userIndex, userId }) {
   const setShow = () => {
     setTransaction({ ...transaction, tran_receipt: "" });
   }
-
-
-  const monthOpiton = [
-    { value: "", key: "" },
-    { value: "JAN 2023", key: "jan" },
-    { value: "FEB 2023", key: "feb" },
-    { value: "MARCH 2023", key: "march" },
-    { value: "APRIL 2023", key: "apr" },
-    { value: "MAY 2023", key: "may" },
-    { value: "JUNE 2023", key: "june" },
-    { value: "JULY 2023", key: "jul" },
-    { value: "AUGUST 2023", key: "aug" },
-    { value: "SEPTEMBER 2023", key: "sep" },
-    { value: "OCTOBER 2023", key: "oct" },
-    { value: "NOVEMBER 2023", key: "nov" },
-    { value: "DECEMBER 2023", key: "dec" },
-  ];
-  const transactionType = [
-    { value: "", key: "" },
-    { value: "Home Expense", key: "Home Expense" },
-    { value: "Personal Expense", key: "Personal Expense" },
-    { value: "Income", label: "Income" },
-  ];
-  const fromToAccount = [
-    { value: "", key: "" },
-    { value: "Personal Account", key: "Personal Account" },
-    { value: "Real Living", key: "Real Living" },
-    { value: "My Dream Home", key: "My Dream Home" },
-    { value: "Full Circle", key: "Full Circle" },
-    { value: "Core Realtors", key: "Core Realtors" },
-    { value: "Big Block", key: "Big Block" },
-  ];
-
-
 
   const isSubmit = useRef(false);
   const handelSubmit = (e) => {

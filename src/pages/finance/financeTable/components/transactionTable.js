@@ -34,34 +34,47 @@ export default function Transactiontable() {
   }
 
   return (
-    <div>
-      <Link to={"createTransaction"}>
-        <button type="button" className="btn btn-primary my-4 ">
-          Create Transaction
-        </button>
-      </Link>
+    <>
 
-      <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
-        <option value=""></option>
-        <option value="tran_month">Month Year</option>
-        <option value="tran_type">Transaction Type</option>
-        <option value="tran_from">From Account</option>
-        <option value="tran_to">To Account</option>
-      </select>
-      <button type="button" onClick={() => remove()} className="btn btn-primary mx-2 d-inline-flex justify-content-end">LOGOUT</button>
-      <Tablecomponent transactions={transactions} />
-
-      {Object.keys(groupData).map((item) => {
-        console.log(item)
-        console.log("hello group", item, groupData[item]);
-        return (
-          <Tablecomponent
-            transactions={groupData[item]}
-          />
-        );
-      })}
-
-
-    </div>
-  );
+      <div>
+        <Link to={"createTransaction"}>
+          <button type="button" className="btn btn-primary my-2">
+            Create Transaction
+          </button>
+        </Link>
+      </div>
+      {
+        transactions ?
+          <div className="container">
+            <div className="topBarWrapper">
+              <div>
+                <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
+                  <option value=""></option>
+                  <option value="tran_month">Month Year</option>
+                  <option value="tran_type">Transaction Type</option>
+                  <option value="tran_from">From Account</option>
+                  <option value="tran_to">To Account</option>
+                </select>
+              </div>
+              <div>
+                <button type="button" onClick={() => remove()} className="btn btn-primary logOutbtn">LOGOUT</button>
+              </div>
+            </div>
+            <Tablecomponent transactions={transactions} />
+            {
+              Object.keys(groupData).map((item) => {
+                console.log(item)
+                console.log("hello group", item, groupData[item]);
+                return (
+                  <Tablecomponent
+                    transactions={groupData[item]}
+                  />
+                );
+              })
+            }
+          </div >
+          : <span>No data Found</span>
+      }
+    </>
+  )
 }

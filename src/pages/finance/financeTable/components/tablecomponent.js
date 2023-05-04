@@ -1,5 +1,5 @@
 import { React, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./pagination";
 
 export default function Tablecomponent(props) {
@@ -170,18 +170,32 @@ export default function Tablecomponent(props) {
     }
   };
 
+  /* Debounce */
+  const debounce = (func, delay) => {
+    let timer;
+    return function () {
+      const args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay); // whenever we call anynomous function which call from debounce.passing 'this' into inner function refer to same context/this where you call debounce 
+    }
+  }
+  /* Debounce */
   const searchInput = (e) => {
 
-
     const { value } = e.target;
-    let newdata1 = [...props.transactions];
-    delete newdata1.tran_id
-    delete newdata1.tran_receipt
+    const cloneData = [...props.transactions];
+
     if (value !== "") {
 
-      const search = newdata1.filter((data) => {
-        return Object.values(data).some((item) =>
-          item.toString().toLowerCase().includes(value.toLowerCase()));
+      const search = cloneData.filter((data) => {
+
+        return Object.keys(data).some((item) => {
+          console.log(data[item]);
+          if (item != 'tran_id' && item != 'tran_receipt' && data[item].toString().toLowerCase().includes(value.toLowerCase())) {
+
+            return item;
+          }
+        });
       })
 
       setNewData(search);
@@ -189,16 +203,14 @@ export default function Tablecomponent(props) {
     else {
       setNewData(props.transactions);
     }
+    console.log(value);
   }
-
-
-
 
 
   return (
     <>
-      <form class="d-flex mx-2 mb-4">
-        <input class="form-control me-1" onChange={searchInput} type="search" placeholder="Search" aria-label="Search" />
+      <form class="d-flex mx-3 mb-4">
+        <input class="form-control me-1 searchBar" onChange={debounce(searchInput, 500)} type="search" placeholder="Search" aria-label="Search" />
       </form>
       {displayData ?
         <table class="table main_table">
@@ -218,6 +230,7 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_date")}>
                   Transaction Date
+                  <i class="fa-solid fa-sort"></i>
                 </th>
               )}
 
@@ -234,6 +247,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_month")}>
                   Month Year
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
 
@@ -250,6 +265,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_type")}>
                   Transaction Type
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
 
@@ -266,6 +283,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_from")}>
                   Transaction From
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
 
@@ -282,6 +301,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_to")}>
                   Transaction To
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
 
@@ -298,6 +319,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_amount")}>
                   Amount
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
 
@@ -316,6 +339,8 @@ export default function Tablecomponent(props) {
               ) : (
                 <th scope="col" onClick={() => sorting("tran_note")}>
                   Notes
+                  <i class="fa-solid fa-sort"></i>
+
                 </th>
               )}
               <th scope="col">View</th>
@@ -346,6 +371,7 @@ export default function Tablecomponent(props) {
                     <Link to={`${item.tran_id}`}>
                       <i class="fa-solid fa-eye"></i>
                     </Link>
+
                   </td>
                   <td>
                     <Link to={`edit/${item.tran_id}`}>

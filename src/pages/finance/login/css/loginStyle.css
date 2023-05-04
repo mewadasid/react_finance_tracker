@@ -10,3 +10,8 @@
     padding: 20px;
     border-radius: 10px;
 }
+
+.error_msg {
+    color: #ff0000;
+    font-size: 15px;
+}

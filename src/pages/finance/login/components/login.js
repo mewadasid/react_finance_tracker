@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import '../css/loginStyle.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 export default function Login() {
     const navigate = useNavigate();
 
@@ -63,37 +63,24 @@ export default function Login() {
     const handleSubmit = (e) => {
         const empty_error = emptyCheck();
 
-
-
         if (Object.keys(empty_error).length > 0) {
             setError(empty_error);
             e.preventDefault()
         }
         else {
-            debugger
-            debugger
-            credential.map((item, index) => {
-                if (credential[index].email === loginData.userEmail && credential[index].password === loginData.userPassword) {
-                    setError((c) => {
-                        const { auhtenticate_email_error, ...rest } = c;
-                        return rest;
-                    })
+            for (let key in credential) {
+                if (credential[key].email === loginData.userEmail && credential[key].password === loginData.userPassword) {
                     flag.current = true;
-
+                    break;
                 }
                 else {
                     setError({ ...errors, auhtenticate_email_error: "Entered credential is wrong" })
                     e.preventDefault();
                     flag.current = false;
-
-
                 }
-
             }
 
-            )
         }
-
         if (flag.current == true) {
             if (Object.keys(errors).length > 0 || flag.current == false) {
                 e.preventDefault();
@@ -106,7 +93,6 @@ export default function Login() {
         }
 
     }
-
     const emptyCheck = () => {
         const error = {};
         if (loginData.userEmail === "") {
@@ -119,6 +105,7 @@ export default function Login() {
     }
 
     const setLocalStorage = () => {
+
         if (flag.current == true) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let token = '';
@@ -126,6 +113,7 @@ export default function Login() {
 
                 token += characters.charAt(Math.floor(Math.random() * characters.length))
             }
+
             localStorage.setItem('loginToken', JSON.stringify(token));
             navigate('/');
         }
@@ -144,7 +132,7 @@ export default function Login() {
         e.preventDefault();
         const { name, value } = e.target;
         const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
-        const regex_psw = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+        // const regex_psw = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
         switch (name) {
             case 'userEmail':
                 if (!regex.test(value)) {
@@ -155,19 +143,6 @@ export default function Login() {
                         const { email_wrong, ...rest } = c;
                         return rest;
                     });
-                }
-                break;
-
-            case 'userPassword':
-                console.log(value);
-                if (!regex_psw.test(value)) {
-                    setError({ ...errors, password_wrong: 'Password must be Minimum eight characters, at least one Capital and Small letter, one number and one special character' })
-                }
-                else {
-                    setError((c) => {
-                        const { password_wrong, ...rest } = c
-                        return rest;
-                    })
                 }
                 break;
             default:
@@ -185,23 +160,25 @@ export default function Login() {
     return (
         <div className='form_container'>
             <form onSubmit={handleSubmit}>
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input type="text" name='userEmail' class="form-control" onChange={handleChange} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='test@gmail.com' />
-                    <div><span>{errors.email_wrong}</span></div>
-                    <div><span>{errors.email_field_empty}</span></div>
-                    <div><span>{errors.auhtenticate_email_error}</span></div>
+                <div className="mb-3">
+                    <label for="exampleInputEmail1" className="form-label">Email address</label>
+                    <input type="text" name='userEmail' className="form-control" onChange={handleChange} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='test@gmail.com' />
+                    <div><span className='error_msg mb-2'>{errors.email_wrong}</span></div>
+                    <div><span className='error_msg mb-2'>{errors.email_field_empty}</span></div>
+                    <div><span className='error_msg mb-2'>{errors.auhtenticate_email_error}</span></div>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" name='userPassword' class="form-control" onChange={handleChange} id="exampleInputPassword1" placeholder='password' />
-                    <div><span>{errors.password_wrong}</span></div>
-                    <div><span>{errors.password_field_empty}</span></div>
-                    <div><span>{errors.auhtenticate_email_error}</span></div>
+                <div className="mb-3">
+                    <label for="exampleInputPassword1" className="form-label">Password</label>
+                    <input type="password" name='userPassword' className="form-control" onChange={handleChange} id="exampleInputPassword1" placeholder='password' />
+                    <div><span className='error_msg mb-2'>{errors.password_wrong}</span></div>
+                    <div><span className='error_msg mb-2'>{errors.password_field_empty}</span></div>
+                    <div><span className='error_msg mb-2'>{errors.auhtenticate_email_error}</span></div>
 
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" className="mb-2 btn btn-primary">Submit</button>
             </form>
+            <span>New User </span><Link to={'/register'}> Click For Register</Link>
+
         </div>
     )
 }
