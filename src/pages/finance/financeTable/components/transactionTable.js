@@ -45,11 +45,11 @@ export default function Transactiontable() {
       </div>
       {
         transactions ?
-          <div className="container">
+          <div className="container-fluid">
             <div className="topBarWrapper">
               <div>
                 <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
-                  <option value=""></option>
+                  <option value="">None</option>
                   <option value="tran_month">Month Year</option>
                   <option value="tran_type">Transaction Type</option>
                   <option value="tran_from">From Account</option>

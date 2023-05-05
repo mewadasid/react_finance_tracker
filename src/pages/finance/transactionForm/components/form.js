@@ -4,7 +4,7 @@ import Selectcombo from "./comboBox";
 import { monthOpiton, transactionType, fromToAccount } from '../../utils/constant'
 import "../css/formStyle.css";
 export default function Form({ formValues, userIndex, userId }) {
-  console.log(formValues, "FORM")
+
   const navigate = useNavigate();
   let intialTransaction;
   formValues ? intialTransaction = {
@@ -32,6 +32,7 @@ export default function Form({ formValues, userIndex, userId }) {
   const [formerror, setFormError] = useState({});
 
 
+
   const setShow = () => {
     setTransaction({ ...transaction, tran_receipt: "" });
   }
@@ -41,15 +42,15 @@ export default function Form({ formValues, userIndex, userId }) {
     let error = '';
     if (isSubmit.current === false) {
       error = emptyCheck();
+      if (Object.keys(error).length > 0) {
+        setFormError(error);
+        e.preventDefault();
+      }
     }
-    ;
-    console.log(error);
 
-    if (Object.keys(error).length > 0) {
-      setFormError(error);
-      e.preventDefault();
-    }
-    else {
+
+    if (Object.keys(error).length === 0) {
+
       if (Object.keys(formerror).length > 0) {
         e.preventDefault();
       } else {
@@ -57,8 +58,9 @@ export default function Form({ formValues, userIndex, userId }) {
         navigate("/displayData");
       }
     }
-
   }
+
+
 
   const setLocalstorage = () => {
 
@@ -68,19 +70,19 @@ export default function Form({ formValues, userIndex, userId }) {
       debugger
       if (formValues) {
         const index = Object.values(getData).map((item) => item.tran_id).findIndex((userIndex) => userIndex == formValues.tran_id)
-        console.log(index, "USE INED")
 
 
 
-        console.log(transaction, "UPDATE TRASN")
+
+          (transaction, "UPDATE TRASN")
         getData[index] = Object.assign(getData[index], transaction);
-        console.log(getData, "NEW GETDATA");
+
 
       }
       else {
 
         const previousId = getData[getData.length - 1].tran_id;
-        console.log(previousId)
+
         transaction.tran_id = previousId + 1;
         getData.push(transaction);
       }
@@ -89,130 +91,57 @@ export default function Form({ formValues, userIndex, userId }) {
     } else {
 
       const transaction_clone = { ...transaction };
-      console.log(transaction_clone)
+
       transaction_clone.tran_id = 1;
 
       localStorage.setItem("Transaction", JSON.stringify([transaction_clone]));
     }
   }
 
-  console.log(formerror)
+
 
   const handelChange = (e, index) => {
     const { name, value } = e.target;
-
+    debugger
     setTransaction({ ...transaction, [name]: value });
 
-    console.log(name + "--" + value);
     switch (name) {
-      case "tran_receipt":
-        if (e.target.files[0].size > "100000") {
-          setFormError({
-            ...formerror,
-            file_error: "Files size must be less than 1 MB",
-          });
-        } else {
+
+      case 'tran_date':
+        if (value !== "") {
           setFormError((c) => {
-            console.log(c);
-            const { file_big, ...rest } = c;
+            const { tran_date, ...rest } = c
             return rest;
-          });
-
-          let fileExtension = e.target.files[0].type;
-          fileExtension = fileExtension.substr(
-            fileExtension.indexOf("/") + 1,
-            fileExtension.length
-          );
-
-          console.log(typeof fileExtension);
-          if (
-            fileExtension.toLowerCase() === "jpeg" ||
-            fileExtension.toLowerCase() === "jpg" ||
-            fileExtension.toLowerCase() === "png"
-          ) {
-            setFormError((c) => {
-              console.log(c);
-              const { file_error, ...rest } = c;
-              return rest;
-            });
-          } else {
-            setFormError({
-              ...formerror,
-              file_error: "File type must be JPG PNG JPEG",
-            });
-          }
-
-          const reader = new FileReader();
-          const file_banner = e.target.files[0];
-
-          reader.addEventListener("load", () => {
-            let imgSrc = reader.result;
-            setTransaction({ ...transaction, [name]: imgSrc });
-          });
-          reader.readAsDataURL(file_banner);
-          setShow(true);
+          })
+        }
+        break;
+      case 'tran_month':
+        if (value !== "") {
+          setFormError((c) => {
+            const { tran_month, ...rest } = c
+            return rest;
+          })
         }
         break;
 
-      default:
-        console.log("object");
+      case 'tran_type':
+        if (value !== "") {
+          setFormError((c) => {
+            const { tran_type, ...rest } = c
+            return rest;
+          })
+        }
         break;
-    }
-  }
-
-  const stopFIrst = useRef(true);
-  useEffect(
-    () => {
-      if (stopFIrst.current === true) {
-        stopFIrst.current = false;
-        return;
-      }
-      else {
-        let clone = Object.assign({}, formerror);
-        Object.keys(transaction).map((item) => {
-
-          if (transaction[item] !== "") {
-            delete clone[item];
-          }
-          setFormError(clone);
-        })
-
-        if (Object.keys(clone).length > 0) {
-          isSubmit.current = false;
-        }
-
-
-
-        if (transaction["tran_date"] !== "") {
-          const date = new Date();
-          const currentDate = date.toISOString().split('T')[0];
-
-          if (transaction["tran_date"] > currentDate) {
-            setFormError({ ...formerror, date_error: " Date cannot be greater than today" })
-          }
-          else {
-            setFormError((c) => {
-              console.log(c);
-              const { date_error, ...rest } = c;
-              return rest;
-            });
-          }
-        }
-        if ((transaction["tran_from"] && transaction["tran_to"]) !== "") {
-          if (transaction["tran_from"] === transaction["tran_to"]) {
-            setFormError({ ...formerror, account_same: "Both same" });
-          } else {
-            setFormError((c) => {
-              console.log(c);
-              const { account_same, ...rest } = c;
-              return rest;
-            });
-          }
-        }
-        if (transaction["tran_amount"] !== "") {
+      case 'tran_amount':
+        if (value !== ""
+        ) {
+          setFormError((c) => {
+            const { tran_amount, ...rest } = c;
+            return rest;
+          })
           if (
-            transaction["tran_amount"] === '0' ||
-            transaction["tran_amount"] < 0
+            value === '0' ||
+            value < 0
           ) {
             setFormError({
               ...formerror,
@@ -220,43 +149,146 @@ export default function Form({ formValues, userIndex, userId }) {
             });
           } else {
             setFormError((c) => {
-              console.log(c);
+
               const { amount_error, ...rest } = c;
               return rest;
             });
           }
         }
+        break;
 
-        if (transaction['tran_note'] !== "") {
-          if (transaction['tran_note'].trim() === "") {
-            setFormError({ ...formerror, note_error: "write something white space not allowed" });
+      case 'tran_note':
+        if (value.trim() === "") {
+          setFormError({ ...formerror, note_error: "write something white space not allowed" });
+        }
+        else {
+          setFormError((c) => {
+            const { note_error, ...rest } = c
+            return rest;
+          });
+          setFormError((c) => {
+            const { tran_note, ...rest } = c;
+            return rest;
+          })
+          if (value.length > 250) {
+            setFormError({ ...formerror, note_error: "Length is reached!!!" });
+          } else {
+            setFormError((c) => {
+
+              const { note_error, ...rest } = c;
+              return rest;
+            });
           }
-          else {
-            if (transaction["tran_note"].length > 250) {
-              setFormError({ ...formerror, note_error: "Length is reached!!!" });
-            } else {
+        }
+        break;
+
+      case "tran_receipt":
+        if (value !== "") {
+          setFormError((c) => {
+
+            const { tran_receipt, ...rest } = c;
+            return rest;
+          });
+          if (e.target.files[0].size > "100000") {
+            setFormError({
+              ...formerror,
+              file_error: "Files size must be less than 1 MB",
+            });
+            setTransaction({ ...transaction, tran_receipt: '' });
+
+          } else {
+            setFormError((c) => {
+
+              const { file_error, ...rest } = c;
+              return rest;
+            });
+
+            let fileExtension = e.target.files[0].type;
+            fileExtension = fileExtension.substr(
+              fileExtension.indexOf("/") + 1,
+              fileExtension.length
+            );
+
+
+            if (
+              fileExtension.toLowerCase() === "jpeg" ||
+              fileExtension.toLowerCase() === "jpg" ||
+              fileExtension.toLowerCase() === "png"
+            ) {
               setFormError((c) => {
-                console.log(c);
-                const { note_error, ...rest } = c;
+
+                const { file_error, ...rest } = c;
                 return rest;
               });
+              const reader = new FileReader();
+              const file_banner = e.target.files[0];
+
+              reader.addEventListener("load", () => {
+                let imgSrc = reader.result;
+                setTransaction({ ...transaction, [name]: imgSrc });
+              });
+              reader.readAsDataURL(file_banner);
+
+            } else {
+              setFormError({
+                ...formerror,
+                file_error: "File type must be JPG PNG JPEG",
+              });
+              setTransaction({ ...transaction, tran_receipt: '' });
+
             }
           }
         }
+        break;
+
+      case 'tran_from':
+        if (value !== "") {
+
+          setFormError((c) => {
+            const { tran_from, ...rest } = c
+            return rest;
+          })
+
+          if (value === transaction["tran_to"]) {
+            setFormError({ ...formerror, account_same: "Both same" });
+          } else {
+            setFormError((c) => {
+
+              const { account_same, ...rest } = c;
+              return rest;
+            });
+          }
+        }
+
+        break;
+      case 'tran_to':
+        if (value !== "") {
+          setFormError((c) => {
+
+            const { tran_to, ...rest } = c;
+            return rest;
+          });
+
+          if (transaction["tran_from"] === value) {
+            setFormError({ ...formerror, account_same: "Both same" });
+          } else {
+            setFormError((c) => {
+
+              const { account_same, ...rest } = c;
+              return rest;
+            });
+          }
+        }
+        break;
+      default:
+        alert("Something Happen Wrong Please Try Again Later!!!!");
+        break;
+    }
+
+  }
 
 
-      }
-
-    },
-    //eslint-disable-next-line
-    [transaction]
-  );
-
-
-  console.log(isSubmit)
-  console.log(formerror)
   const emptyCheck = () => {
-
     const error = {};
     let i = 0;
     const error_name = ['transaction Date', 'transaction Month', 'transaction Type', 'transaction From'
@@ -282,6 +314,8 @@ export default function Form({ formValues, userIndex, userId }) {
 
       <div>
         <button type="button" onClick={() => remove()} className="btn btn-primary my-2">LOGOUT</button>
+        <button type="button" onClick={() => navigate('/')} className="btn btn-primary my-2 mx-3">Back To Dashboard</button>
+
         <form
           className="userform"
           encType="multipart/form-data"
@@ -300,6 +334,7 @@ export default function Form({ formValues, userIndex, userId }) {
                   id="tranDate"
                   onChange={handelChange}
                   value={transaction.tran_date}
+                  max={new Date().toISOString().split('T')[0]}
                 />
                 <div><span className="fieldError">{formerror.date_error}</span></div>
                 <div><span className="fieldError">{formerror.tran_date}</span></div>
@@ -385,7 +420,7 @@ export default function Form({ formValues, userIndex, userId }) {
             <div class="row mb-3">
               <label for="inputEmail3" class="col-sm-2 col-form-label">Transaction Receipt:</label>
               <div class="col-sm-10">
-                {transaction.tran_receipt !== "" ?
+                {transaction.tran_receipt !== '' ?
                   <>
                     <img src={transaction.tran_receipt}
                       width="100"
@@ -401,6 +436,7 @@ export default function Form({ formValues, userIndex, userId }) {
                     name="tran_receipt"
                     id="tranReceipt"
                     onChange={handelChange}
+                    value={transaction.tran_receipt}
                   />}
 
                 <div><span className="fieldError">{formerror.file_error}</span></div>
