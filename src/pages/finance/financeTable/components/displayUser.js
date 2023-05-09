@@ -1,10 +1,12 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import "../css/style.css";
+import { getItem } from "../../requests/localstorage";
+
 export default function Displayuser() {
   const { id } = useParams();
 
-  const transDetail = JSON.parse(localStorage.getItem("Transaction"));
+  const transDetail = getItem("Transaction");
 
   return (
     <div>

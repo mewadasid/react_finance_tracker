@@ -1,6 +1,7 @@
-import { React, useState, useRef } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "./pagination";
+import { getItem, setItem } from "../../requests/localstorage";
 
 export default function Tablecomponent(props) {
   const [newData, setNewData] = useState(props.transactions);
@@ -206,6 +207,16 @@ export default function Tablecomponent(props) {
     console.log(value);
   }
 
+  // const stop =
+  // useEffect(() => {
+  //   setItem("Transaction", newData);
+  // }, [newData])
+
+  const removeTransaction = (id) => {
+    const transaction_data = getItem("Transaction");
+    transaction_data.splice(id, 1);
+    setNewData(transaction_data);
+  }
 
   return (
     <>
@@ -345,6 +356,7 @@ export default function Tablecomponent(props) {
               )}
               <th scope="col">View</th>
               <th scope="col">Edit Data</th>
+              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -377,6 +389,10 @@ export default function Tablecomponent(props) {
                     <Link to={`edit/${item.tran_id}`}>
                       <i class="fa-solid fa-pen-to-square"></i>
                     </Link>
+                  </td>
+                  <td>
+                    <i class="fa-solid fa-trash" onClick={() => removeTransaction(index)}></i>
+
                   </td>
                 </tr>
               );

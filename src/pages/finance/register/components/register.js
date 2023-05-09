@@ -1,11 +1,10 @@
 
 import { React, useEffect, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
-import './css/registerform.css';
+import '../css/registerform.css';
 export default function Register() {
 
     const getRegister = JSON.parse(localStorage.getItem("userRegister"));
-
 
 
     const navigate = useNavigate();

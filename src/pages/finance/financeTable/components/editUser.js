@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "../css/style.css";
-import Form from "../../transactionForm/components/form";
+
+
+import Transactionform from "../../transactionForm/components/useform";
 export default function Edituser() {
     const { id } = useParams();
 
@@ -16,7 +18,7 @@ export default function Edituser() {
                 .filter((data) => data.tran_id == id)
                 .map((item) => {
                     console.log(index);
-                    return <Form formValues={item} userIndex={index} userId={id} />
+                    return <Transactionform formValues={item} userIndex={index} userId={id} />
                 })
             }
         </div>
