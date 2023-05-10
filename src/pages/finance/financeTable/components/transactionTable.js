@@ -3,39 +3,74 @@ import { Link, useNavigate } from "react-router-dom";
 import "../css/style.css";
 
 import Tablecomponent from "./tablecomponent";
+import { useTable } from "../../context/tableContext";
 
 export default function Transactiontable() {
   const navigate = useNavigate();
-  const transDetail = JSON.parse(localStorage.getItem("Transaction"));
+  const { transactionData } = useTable(); //Context
 
-  const [transactions, setTransaction] = useState(transDetail);
+  const [transactions, setTransaction] = useState(transactionData);
   const [groupData, setGroupData] = useState({});
 
+  useEffect(() => {
+    setTransaction(transactionData);
+  }, [transactionData]);
+
+  const [isGroup, setIsGroup] = useState(false);
+  const [groupVal, setGroupVal] = useState("");
+
+  useEffect(() => {
+    if (isGroup === true) {
+      handleChange(groupVal);
+    }
+  }, [transactions]);
 
   const handleChange = (e) => {
-    const group = e.target.value;
-    console.log(group);
-    const groupedMap = {};
-    if (group !== "") {
-      for (const e of transDetail) {
-        if (groupedMap.hasOwnProperty(e[group])) {
-          groupedMap[e[group]].push(e);
-        } else {
-          groupedMap[e[group]] = [e];
+    debugger;
+    console.log(e);
+    let groupedMap = {};
+    let cloneTransaction = [...transactions];
+    setIsGroup(true);
+    if (e.target) {
+      const group = e.target.value;
+      setGroupVal(group);
+      console.log(group);
+
+      if (group !== "") {
+        for (const key of cloneTransaction) {
+          if (groupedMap.hasOwnProperty(key[group])) {
+            groupedMap[key[group]].push(key);
+          } else {
+            groupedMap[key[group]] = [key];
+          }
         }
+        setGroupData(groupedMap);
+      } else {
+        setGroupData([]);
+      }
+    } else {
+      if (e) {
+        for (const key of cloneTransaction) {
+          if (groupedMap.hasOwnProperty(key[e])) {
+            groupedMap[key[e]].push(key);
+          } else {
+            groupedMap[key[e]] = [key];
+          }
+        }
+        setGroupData(groupedMap);
+      } else {
+        setGroupData([]);
       }
     }
-    setGroupData(groupedMap);
   };
 
   const remove = () => {
     localStorage.removeItem("loginToken");
-    navigate('/login')
-  }
+    navigate("/login");
+  };
 
   return (
     <>
-
       <div>
         <Link to={"createTransaction"}>
           <button type="button" className="btn btn-primary my-2">
@@ -43,38 +78,42 @@ export default function Transactiontable() {
           </button>
         </Link>
       </div>
-      {
-        transactions ?
-          <div className="container-fluid">
-            <div className="topBarWrapper">
-              <div>
-                <select className="btn btn-primary mx-5" name="" onChange={handleChange}>
-                  <option value="">None</option>
-                  <option value="tran_month">Month Year</option>
-                  <option value="tran_type">Transaction Type</option>
-                  <option value="tran_from">From Account</option>
-                  <option value="tran_to">To Account</option>
-                </select>
-              </div>
-              <div>
-                <button type="button" onClick={() => remove()} className="btn btn-primary logOutbtn">LOGOUT</button>
-              </div>
+      {transactions ? (
+        <div className="container-fluid">
+          <div className="topBarWrapper">
+            <div>
+              <select
+                className="btn btn-primary mx-5"
+                name=""
+                onChange={handleChange}
+              >
+                <option value="">None</option>
+                <option value="tran_month">Month Year</option>
+                <option value="tran_type">Transaction Type</option>
+                <option value="tran_from">From Account</option>
+                <option value="tran_to">To Account</option>
+              </select>
             </div>
-            <Tablecomponent transactions={transactions} />
-            {
-              Object.keys(groupData).map((item) => {
-                console.log(item)
-                console.log("hello group", item, groupData[item]);
-                return (
-                  <Tablecomponent
-                    transactions={groupData[item]}
-                  />
-                );
-              })
-            }
-          </div >
-          : <span>No data Found</span>
-      }
+            <div>
+              <button
+                type="button"
+                onClick={() => remove()}
+                className="btn btn-primary logOutbtn"
+              >
+                LOGOUT
+              </button>
+            </div>
+          </div>
+          <Tablecomponent transactions={transactions} />
+          {Object.keys(groupData).map((item) => {
+            console.log(item);
+            console.log("hello group", item, groupData[item]);
+            return <Tablecomponent transactions={groupData[item]} />;
+          })}
+        </div>
+      ) : (
+        <span>No data Found</span>
+      )}
     </>
-  )
+  );
 }

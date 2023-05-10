@@ -1,13 +1,12 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import "../css/style.css";
-import { getItem } from "../../requests/localstorage";
+import { useTable } from "../../context/tableContext";
 
 export default function Displayuser() {
   const { id } = useParams();
-
-  const transDetail = getItem("Transaction");
-
+  const { transactionData } = useTable();
+  const transDetail = transactionData;
   return (
     <div>
       <form className="user_form">
@@ -19,8 +18,8 @@ export default function Displayuser() {
         <fieldset disabled>
           <legend>Your Transaction</legend>
           {Object.values(transDetail)
-            .filter((data) => data.tran_id == id).map((item) => {
-
+            .filter((data) => data.tran_id == id)
+            .map((item) => {
               console.log(item.tran_date);
               return (
                 <div key={id}>
@@ -148,7 +147,6 @@ export default function Displayuser() {
               );
             })}
         </fieldset>
-
       </form>
     </div>
   );
