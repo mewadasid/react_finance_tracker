@@ -2,7 +2,7 @@ import { React, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "./pagination";
 import { useTable } from "../../context/tableContext";
-
+import toast, { Toaster } from "react-hot-toast";
 export default function Tablecomponent(props) {
   const [newData, setNewData] = useState(props.transactions);
   const { transactionData, setTransactionData } = useTable();
@@ -80,7 +80,7 @@ export default function Tablecomponent(props) {
         );
         break;
       default:
-        sortedmonth = newData;
+        sortedmonth = props.transactions;
         break;
     }
     return sortedmonth;
@@ -104,7 +104,7 @@ export default function Tablecomponent(props) {
         });
         break;
       default:
-        sorteddate = newData;
+        sorteddate = props.transactions;
         break;
     }
     return sorteddate;
@@ -125,7 +125,7 @@ export default function Tablecomponent(props) {
 
         break;
       default:
-        sortedamount = newData;
+        sortedamount = props.transactions;
         break;
     }
     return sortedamount;
@@ -169,13 +169,14 @@ export default function Tablecomponent(props) {
         }
         break;
       default:
-        const data3 = newData;
+        const data3 = props.transactions;
         setNewData(data3);
         break;
     }
   };
 
   /* Debounce */
+
   const debounce = (func, delay) => {
     let timer;
     return function () {
@@ -184,6 +185,7 @@ export default function Tablecomponent(props) {
       timer = setTimeout(() => func.apply(this, args), delay); // whenever we call anynomous function which call from debounce.passing 'this' into inner function refer to same context/this where you call debounce
     };
   };
+
   /* Debounce */
   const searchInput = (e) => {
     const { value } = e.target;
@@ -203,28 +205,65 @@ export default function Tablecomponent(props) {
         });
       });
 
+      console.log(search, "DSDSD");
+      if (search.length !== 0) {
+        toast.success("Data Founded", {
+          duration: 1300,
+        });
+      } else {
+        toast.error("No Data Found", {
+          duration: 1300,
+        });
+      }
       setNewData(search);
     } else {
       setNewData(props.transactions);
     }
-    console.log(value);
   };
 
   const removeTransaction = (id) => {
-    const transaction_data = [...newData];
+    debugger;
+    console.log(id);
+    toast.success("Record Deleted", {
+      icon: <i className="fa-solid fa-trash"></i>,
+      style: {
+        minWidth: "150px",
+        color: "#713200",
+      },
+      iconTheme: {},
+    });
+    // const transaction_data = [...props.transactions];
     const transaction_data_context = [...transactionData];
-    const newFilter = transaction_data.filter(
-      (item) => parseInt(item.tran_id) !== parseInt(id)
-    );
+
     const filteredRecord = transaction_data_context.filter(
       (item) => parseInt(item.tran_id) !== parseInt(id)
     );
-    setNewData(newFilter);
+
     setTransactionData(filteredRecord);
   };
 
   return (
     <>
+      <Toaster
+        toastOptions={{
+          // Define default options
+          className: "",
+          duration: 5000,
+          style: {
+            background: "#fff",
+            color: "#000",
+          },
+
+          // Default options for specific types
+          success: {
+            duration: 3000,
+            theme: {
+              primary: "green",
+              secondary: "green",
+            },
+          },
+        }}
+      />
       <form class="d-flex mx-3 mb-4">
         <input
           class="form-control me-1 searchBar"
@@ -400,9 +439,6 @@ export default function Tablecomponent(props) {
                     </Link>
                   </td>
                   <td>
-                    <span onClick={() => removeTransaction(item.tran_id)}>
-                      DE
-                    </span>
                     <i
                       class="fa-solid fa-trash"
                       onClick={() => removeTransaction(item.tran_id)}

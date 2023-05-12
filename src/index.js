@@ -13,11 +13,11 @@ import Protected from "./pages/finance/protected/components/protectedRoute";
 import Loginform from "./pages/finance/login/components/loginUse";
 import Registerform from "./pages/finance/register/components/registerUse";
 import Transactionform from "./pages/finance/transactionForm/components/useform";
-import TransactionContext from "./pages/finance/context/tableContext";
+import TableProvider from "./pages/finance/context/tableContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <TransactionContext>
+  <TableProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -48,7 +48,7 @@ root.render(
         </Route>
       </Routes>
     </BrowserRouter>
-  </TransactionContext>
+  </TableProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

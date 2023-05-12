@@ -12,7 +12,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTable } from "../../context/tableContext";
 
-export default function Transactionform({ formValues, userIndex, userId }) {
+export default function Transactionform({ formValues }) {
   const { transactionData, setTransactionData } = useTable(); //Context
   const navigate = useNavigate();
 
@@ -104,7 +104,7 @@ export default function Transactionform({ formValues, userIndex, userId }) {
           }
         }
       }),
-    tran_note: yup.string().required("Please Enter Notes"),
+    tran_note: yup.string().trim().required("Please Enter Notes"),
   });
 
   const {

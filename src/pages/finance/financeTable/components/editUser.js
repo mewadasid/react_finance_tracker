@@ -8,20 +8,18 @@ export default function Edituser() {
   const { id } = useParams();
 
   const { transactionData } = useTable(); //Context
-  const transDetail = transactionData;
-  const index = Object.values(transDetail)
-    .map((item) => item.tran_id)
-    .findIndex((did) => did == id);
+  const transDetail = [...transactionData];
+  // const index = Object.values(transDetail)
+  //   .map((item) => item.tran_id)
+  //   .findIndex((did) => did == id);
 
   return (
     <div>
       {Object.values(transDetail)
         .filter((data) => data.tran_id == id)
         .map((item) => {
-          console.log(index);
-          return (
-            <Transactionform formValues={item} userIndex={index} userId={id} />
-          );
+          // console.log(index);
+          return <Transactionform formValues={item} userId={id} />;
         })}
     </div>
   );

@@ -26,15 +26,12 @@ export default function Transactiontable() {
   }, [transactions]);
 
   const handleChange = (e) => {
-    debugger;
-    console.log(e);
     let groupedMap = {};
     let cloneTransaction = [...transactions];
     setIsGroup(true);
     if (e.target) {
       const group = e.target.value;
       setGroupVal(group);
-      console.log(group);
 
       if (group !== "") {
         for (const key of cloneTransaction) {
@@ -46,6 +43,7 @@ export default function Transactiontable() {
         }
         setGroupData(groupedMap);
       } else {
+        console.log("object");
         setGroupData([]);
       }
     } else {
@@ -59,7 +57,9 @@ export default function Transactiontable() {
         }
         setGroupData(groupedMap);
       } else {
+        console.log("object");
         setGroupData([]);
+        // setIsGroup(false);
       }
     }
   };
@@ -78,6 +78,7 @@ export default function Transactiontable() {
           </button>
         </Link>
       </div>
+
       {transactions ? (
         <div className="container-fluid">
           <div className="topBarWrapper">
